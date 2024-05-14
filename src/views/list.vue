@@ -935,7 +935,7 @@ import axios from 'axios';
     let text:string[] = []
     filesList.value.forEach((item:FileInfo) => {
       if(checkedRowKeys.value.indexOf(item.id) !== -1) {
-       text.push(item.id)
+       text.push(item)
       }
     })
     batchName(text)
