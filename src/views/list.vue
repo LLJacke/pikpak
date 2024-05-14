@@ -158,11 +158,11 @@
             <circle-x></circle-x>
           </n-icon>
         </template>
-        <template>
-          <n-input :placeholder="newName.value" v-model:value="newName.value"></n-input>
+        <template v-if="newName2">
+          <n-input :placeholder="newName2.value" v-model:value="newName2.value"></n-input>
         </template>
         <template #action>
-          <n-button :block="true" type="primary" :disabled="!newName || !newName.value" @click="nameAllPost">重命名</n-button>
+          <n-button :block="true" type="primary" :disabled="!newName2 || !newName2.value" @click="nameAllPost">重命名</n-button>
         </template>
       </n-card>
     </n-modal>
@@ -928,7 +928,7 @@ import axios from 'axios';
     checkedRowKeys.value = []
   }
   const batchNameAll = () => {
-    newName.value = {
+    newName2.value = {
       id: "",
       value: ""
     }
@@ -1014,6 +1014,10 @@ import axios from 'axios';
       })
   }
   const changeAllName = ref(false)
+  const newName2 = ref<{
+    id: string,
+    value: string
+  } | null>()
   // const nameAllPost = () => {
   //   const str = newName.value?.value
   //   for (let i in nameFiles.value) {
@@ -1035,10 +1039,7 @@ import axios from 'axios';
   //   window.localStorage.removeItem('pikpakNameFiles')
   // }
   const nameAllPost = async () => {
-    // 检查 newName 是否存在
-    if (!newName.value) return
-
-    const str = newName.value.value
+    const str = newName2.value?.value
     if (!str) return
 
     // 遍历 nameFiles 并发送 PATCH 请求
@@ -1062,7 +1063,7 @@ import axios from 'axios';
 
     // 刷新文件列表和清理操作
     getFileList()
-    newName.value = null
+    newName2.value = null
     changeAllName.value = false
     window.localStorage.removeItem('pikpakNameFiles')
 }
