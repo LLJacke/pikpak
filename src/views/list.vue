@@ -918,23 +918,23 @@ import axios from 'axios';
     checkedRowKeys.value = []
   }
   const batchCopyAll = (items:object) => {
-    let text:string[] = []
+    let text:FileInfo[] = []
     filesList.value.forEach((item:FileInfo) => {
       if(checkedRowKeys.value.indexOf(item.id) !== -1) {
-       text.push(item.id)
+       text.push(item)
       }
     })
     batchCopy(text)
     checkedRowKeys.value = []
   }
-  const batchNameAll = (items:object) => {
+  const batchNameAll = () => {
     let text:string[] = []
     filesList.value.forEach((item:FileInfo) => {
       if(checkedRowKeys.value.indexOf(item.id) !== -1) {
        text.push(item.id)
       }
     })
-    batchCopy(text)
+    batchName(text)
     checkedRowKeys.value = []
   }
   const moveFiles = ref()
@@ -1011,8 +1011,8 @@ import axios from 'axios';
   }
   const nameAllPost = () => {
     const str = newName.value?.value
-    for (let i in nameFiles) {
-        const item = nameFiles[i]
+    for (let i in nameFiles.value) {
+        const item = nameFiles.value[i]
         
         if (item.name.indexOf(str) > -1) {
             const newstr = item.name.replace(str, "")
@@ -1027,6 +1027,7 @@ import axios from 'axios';
               })
         }
     }
+    window.localStorage.removeItem('pikpakNameFiles')
   }
   const downFileList = ref<{[key:string]:any}[]>([])
   const getFloderFile = async (id?:string, page?:string,parent?:string) => {
