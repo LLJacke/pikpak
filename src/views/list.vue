@@ -930,7 +930,7 @@ import axios from 'axios';
   const batchNameAll = () => {
     newName.value = {
       id: "",
-      value: null
+      value: ""
     }
     let text:string[] = []
     filesList.value.forEach((item:FileInfo) => {
