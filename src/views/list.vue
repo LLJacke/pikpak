@@ -57,14 +57,14 @@
             剪切所选
           </n-tooltip>
         </div>
-        <div class="toolbar-item" @click="aria2All">
+        <div class="toolbar-item" @click="batchNameAll">
           <n-tooltip>
             <template #trigger>
               <n-icon>
                 <letter-a></letter-a>
               </n-icon>
             </template>
-            推送到Aria2
+            重命名所选
           </n-tooltip>
         </div>
         <div class="toolbar-item" @click="copyAll">
@@ -148,6 +148,21 @@
         </template>
         <template #action>
           <n-button :block="true" type="primary" :disabled="!newName || !newName.value" @click="namePost">重命名</n-button>
+        </template>
+      </n-card>
+    </n-modal>
+    <n-modal v-model:show="changeAllName">
+      <n-card style="width: 600px;" title="修改名称">
+        <template #header-extra>
+          <n-icon @click="changeAllName = false">
+            <circle-x></circle-x>
+          </n-icon>
+        </template>
+        <template v-if="newName">
+          <n-input :placeholder="newName.value" v-model:value="newName.value"></n-input>
+        </template>
+        <template #action>
+          <n-button :block="true" type="primary" :disabled="!newName || !newName.value" @click="nameAllPost">重命名</n-button>
         </template>
       </n-card>
     </n-modal>
@@ -912,6 +927,16 @@ import axios from 'axios';
     batchCopy(text)
     checkedRowKeys.value = []
   }
+  const batchNameAll = (items:object) => {
+    let text:string[] = []
+    filesList.value.forEach((item:FileInfo) => {
+      if(checkedRowKeys.value.indexOf(item.id) !== -1) {
+       text.push(item.id)
+      }
+    })
+    batchCopy(text)
+    checkedRowKeys.value = []
+  }
   const moveFiles = ref()
   const batchMove = (items:object) => {
     moveFiles.value = items
@@ -923,6 +948,13 @@ import axios from 'axios';
     copyFiles.value = items
     window.localStorage.setItem('pikpakCopyFiles', JSON.stringify(items))
     window.$message.success('复制成功，请点击页面右上方粘贴按钮')
+  }
+  const nameFiles = ref()
+  const batchName = (items:object) => {
+    nameFiles.value = items
+    window.localStorage.setItem('pikpakNameFiles', JSON.stringify(items))
+    // window.$message.success('复制成功，请点击页面右上方粘贴按钮')
+    changeAllName.value = true
   }
   const movePost = () => {
     http.post('https://api-drive.mypikpak.com/drive/v1/files:batchMove',{
@@ -976,6 +1008,25 @@ import axios from 'axios';
         newName.value = null
         showName.value = false
       })
+  }
+  const nameAllPost = () => {
+    const str = newName.value?.value
+    for (let i in nameFiles) {
+        const item = nameFiles[i]
+        
+        if (item.name.indexOf(str) > -1) {
+            const newstr = item.name.replace(str, "")
+            http.patch('https://api-drive.mypikpak.com/drive/v1/files/' + item.id, {
+              name: newstr
+            })
+              .then(() => {
+                getFileList()
+                window.$message.success('修改成功')
+                newName.value = null
+                changeAllName.value = false
+              })
+        }
+    }
   }
   const downFileList = ref<{[key:string]:any}[]>([])
   const getFloderFile = async (id?:string, page?:string,parent?:string) => {
