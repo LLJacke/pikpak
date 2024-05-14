@@ -928,6 +928,10 @@ import axios from 'axios';
     checkedRowKeys.value = []
   }
   const batchNameAll = () => {
+    newName.value = {
+      id: "",
+      value: null
+    }
     let text:string[] = []
     filesList.value.forEach((item:FileInfo) => {
       if(checkedRowKeys.value.indexOf(item.id) !== -1) {
