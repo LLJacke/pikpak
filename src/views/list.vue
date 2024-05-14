@@ -158,7 +158,7 @@
             <circle-x></circle-x>
           </n-icon>
         </template>
-        <template v-if="newName">
+        <template>
           <n-input :placeholder="newName.value" v-model:value="newName.value"></n-input>
         </template>
         <template #action>
