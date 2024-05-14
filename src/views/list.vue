@@ -918,10 +918,10 @@ import axios from 'axios';
     checkedRowKeys.value = []
   }
   const batchCopyAll = (items:object) => {
-    let text:FileInfo[] = []
+    let text:string[] = []
     filesList.value.forEach((item:FileInfo) => {
       if(checkedRowKeys.value.indexOf(item.id) !== -1) {
-       text.push(item)
+       text.push(item.id)
       }
     })
     batchCopy(text)
@@ -932,7 +932,7 @@ import axios from 'axios';
       id: "",
       value: ""
     }
-    let text:string[] = []
+    let text:FileInfo[] = []
     filesList.value.forEach((item:FileInfo) => {
       if(checkedRowKeys.value.indexOf(item.id) !== -1) {
        text.push(item)
