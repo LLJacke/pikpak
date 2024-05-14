@@ -1009,26 +1009,59 @@ import axios from 'axios';
         showName.value = false
       })
   }
-  const nameAllPost = () => {
-    const str = newName.value?.value
+  // const nameAllPost = () => {
+  //   const str = newName.value?.value
+  //   for (let i in nameFiles.value) {
+  //       const item = nameFiles.value[i]
+        
+  //       if (item.name.indexOf(str) > -1) {
+  //           const newstr = item.name.replace(str, "")
+  //           http.patch('https://api-drive.mypikpak.com/drive/v1/files/' + item.id, {
+  //             name: newstr
+  //           })
+  //             .then(() => {
+  //               getFileList()
+  //               window.$message.success('修改成功')
+  //               newName.value = null
+  //               changeAllName.value = false
+  //             })
+  //       }
+  //   }
+  //   window.localStorage.removeItem('pikpakNameFiles')
+  // }
+  const nameAllPost = async () => {
+    // 检查 newName 是否存在
+    if (!newName.value) return
+
+    const str = newName.value.value
+    if (!str) return
+
+    // 遍历 nameFiles 并发送 PATCH 请求
     for (let i in nameFiles.value) {
         const item = nameFiles.value[i]
-        
+
         if (item.name.indexOf(str) > -1) {
             const newstr = item.name.replace(str, "")
-            http.patch('https://api-drive.mypikpak.com/drive/v1/files/' + item.id, {
-              name: newstr
-            })
-              .then(() => {
-                getFileList()
+            try {
+                // 发送 PATCH 请求更新文件名
+                await http.patch(`https://api-drive.mypikpak.com/drive/v1/files/${item.id}`, {
+                    name: newstr
+                })
                 window.$message.success('修改成功')
-                newName.value = null
-                changeAllName.value = false
-              })
+            } catch (error) {
+                window.$message.error(`修改失败: ${item.name}`)
+                console.error('Error updating name:', error)
+            }
         }
     }
+
+    // 刷新文件列表和清理操作
+    getFileList()
+    newName.value = null
+    changeAllName.value = false
     window.localStorage.removeItem('pikpakNameFiles')
-  }
+}
+
   const downFileList = ref<{[key:string]:any}[]>([])
   const getFloderFile = async (id?:string, page?:string,parent?:string) => {
     const res:any = await http.get('https://api-drive.mypikpak.com/drive/v1/files', {
