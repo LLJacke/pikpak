@@ -1009,6 +1009,7 @@ import axios from 'axios';
         showName.value = false
       })
   }
+  const changeAllName = ref(false)
   // const nameAllPost = () => {
   //   const str = newName.value?.value
   //   for (let i in nameFiles.value) {
